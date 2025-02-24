@@ -1,0 +1,14 @@
+1 - The id field must be a number., The id field must be greater than 0., The date field must match the format d.m.Y.
+2 - The id has already been taken.
+3 - The id has already been taken.
+4 - The id has already been taken.
+5 - The id has already been taken.
+6 - The id has already been taken.
+10024 - The date field must match the format d.m.Y.
+23636 - The id field must be greater than 0.
+37756 - The id field must be a number., The id field must be greater than 0.
+39109 - The date field must match the format d.m.Y.
+42361 - The id has already been taken.
+46161 - The date field must match the format d.m.Y.
+49317 - The date field must match the format d.m.Y.
+59986 - The date field must match the format d.m.Y.
