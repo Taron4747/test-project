@@ -68,8 +68,8 @@ class ExcelImportService
             'git config user.name "Taron Gyulumyan"',
             'git config user.email "tarongyulumyan@gmail.com"',
             'git status',
-            'git add --all',
-            'git commit -m "Add result.txt with validation errors"',
+            'git add .',
+            'git commit -a -m "Add result.txt with validation errors"',
             'git push origin main'
         ]);
         
