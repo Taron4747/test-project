@@ -35,10 +35,10 @@ class ImportController extends Controller
 
         $this->importService->generateErrorReport($result['errors'], $importId);
 
-        return response()->json([
-            'import_id' => $importId,
-            'result' => $result
-        ]);
+        // return response()->json([
+        //     'import_id' => $importId,
+        //     'result' => $result
+        // ]);
     }
 
     public function getImportedData()
