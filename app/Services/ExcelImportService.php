@@ -45,14 +45,22 @@ class ExcelImportService
 
     protected function commitErrorReport()
     {
+        $filePath = realpath(storage_path('app/private/result.txt'));
+
         $commands = [
-            'git add storage/app/result.txt',
+            'git add -f '.$filePath ,
             'git commit -m "Add result.txt with validation errors"'
         ];
 
-        foreach ($commands as $command) {
-            exec($command);
+      foreach ($commands as $command) {
+        $output = [];
+        $returnVar = 0;
+        exec($command . ' 2>&1', $output, $returnVar);
+
+        if ($returnVar !== 0) {
+            \Log::error("Git command failed: {$command}", ['output' => $output]);
         }
+    }
     }
 
     protected function getRowCount($filePath)

@@ -24,7 +24,7 @@ class ImportController extends Controller
     public function handleUpload(Request $request)
     {
         ini_set('max_execution_time', '300');
-
+$start = \Carbon\Carbon::now()->format('d:m:y h:i');
         $request->validate([
             'file' => 'required|mimes:xlsx|max:10240',
         ]);
@@ -35,8 +35,11 @@ class ImportController extends Controller
         $result = $this->importService->import(storage_path("app/private/{$path}"), $importId);
 
         $this->importService->generateErrorReport($result['errors']);
+        $end = \Carbon\Carbon::now()->format('d:m:y h:i');
 
         return response()->json([
+            'start' => $start,
+            'end' => $end,
             'import_id' => $importId,
             'result' => $result
         ]);
