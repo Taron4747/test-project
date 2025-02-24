@@ -66,7 +66,7 @@ class ExcelImportService
         $commands = [
             'cd ' . base_path(),
             'git status',
-            'git add -all',
+            'git add --all',
             // 'git add -f '.$filePath,
             'git commit -m "Add result.txt with validation errors"',
             'git push origin main'
