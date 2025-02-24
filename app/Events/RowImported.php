@@ -21,12 +21,12 @@ class RowImported implements ShouldBroadcast
 
     public function broadcastOn()
     {
-        return new Channel('import-channel'); // Канал, на который подписывается фронтенд
+        return new Channel('import-channel'); 
     }
 
     public function broadcastAs()
     {
-        return 'row.imported'; // Имя события
+        return 'row.imported'; 
     }
 
     public function broadcastWith()

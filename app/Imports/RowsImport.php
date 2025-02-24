@@ -48,7 +48,6 @@ class RowsImport implements OnEachRow
             event(new RowImported($rowData));
         }
 
-        // Update progress in Redis
         Redis::incr("import_progress:{$this->importId}:processed");
     }
 

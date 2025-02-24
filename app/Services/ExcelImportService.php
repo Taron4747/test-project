@@ -14,14 +14,10 @@ class ExcelImportService
     {
         $import = new RowsImport($importId);
 
-        // Set total rows for progress tracking
         $totalRows = $this->getRowCount($filePath);
         Redis::set("import_progress:{$importId}:total", $totalRows);
         Redis::set("import_progress:{$importId}:processed", 0);
-
         Excel::import($import, $filePath);
-
-        // Clear progress after completion
         Redis::del(["import_progress:{$importId}:total", "import_progress:{$importId}:processed"]);
         return [
             'imported' => $import->getImportedCount(),
@@ -44,12 +40,8 @@ class ExcelImportService
         $filePath = $directoryPath . '/result'.$importId.'.txt';
 
         \File::put($filePath, $content);
-
-
-
-            // Git commit
-            $this->commitErrorReport();
-        }
+        $this->commitErrorReport();
+    }
 
     protected function commitErrorReport( )
     {
@@ -57,8 +49,6 @@ class ExcelImportService
 
         $commands = implode(' && ', [
             'cd ' . base_path(),
-            'git config user.name "Taron Gyulumyan"',
-            'git config user.email "tarongyulumyan@gmail.com"',
             'git status',
             'git add .',
             'git commit -a -m "Add result.txt with validation errors"',
@@ -77,6 +67,6 @@ class ExcelImportService
     {
         $spreadsheet = \PhpOffice\PhpSpreadsheet\IOFactory::load($filePath);
         $sheet = $spreadsheet->getActiveSheet();
-        return $sheet->getHighestRow() - 1; // Exclude header
+        return $sheet->getHighestRow() - 1; 
     }
 }

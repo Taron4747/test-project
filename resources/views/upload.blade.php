@@ -42,42 +42,38 @@
     <ul id="imported-data" class="list-group mt-3"></ul>
 
     <script>
-        // Initialize Pusher
-        console.log("Pusher Loaded:", window.Pusher);
 
-const pusher = new Pusher("{{ env('PUSHER_APP_KEY') }}", {
-    cluster: "{{ env('PUSHER_APP_CLUSTER') }}",
-    encrypted: true
-});
-
-console.log("Pusher Object:", pusher);
-
-
-window.Echo = new Echo({
-    broadcaster: 'pusher',
-    key: '{{ env("PUSHER_APP_KEY") }}',
-    cluster: '{{ env("PUSHER_APP_CLUSTER") }}',
-    forceTLS: true
-});
-
-// Проверяем Echo перед подпиской на канал
-console.log("Echo Initialized:", window.Echo);
-
-window.Echo.channel("import-channel")
-    .listen(".row.imported", (e) => {
-        console.log("New Row Imported:", e.row);
-    });
-
-        const channel = pusher.subscribe("import-channel");
-        channel.bind("row.imported", function(data) {
-            const list = document.getElementById("imported-data");
-            const item = document.createElement("li");
-            item.classList.add("list-group-item");
-            item.textContent = `ID: ${data.row.id}, Name: ${data.row.name}, Date: ${data.row.date}`;
-            list.prepend(item);
+        const pusher = new Pusher("{{ env('PUSHER_APP_KEY') }}", {
+            cluster: "{{ env('PUSHER_APP_CLUSTER') }}",
+            encrypted: true
         });
 
-       
+
+
+
+        window.Echo = new Echo({
+            broadcaster: 'pusher',
+            key: '{{ env("PUSHER_APP_KEY") }}',
+            cluster: '{{ env("PUSHER_APP_CLUSTER") }}',
+            forceTLS: true
+        });
+
+
+        window.Echo.channel("import-channel")
+            .listen(".row.imported", (e) => {
+                console.log("New Row Imported:", e.row);
+            });
+
+                const channel = pusher.subscribe("import-channel");
+                channel.bind("row.imported", function(data) {
+                    const list = document.getElementById("imported-data");
+                    const item = document.createElement("li");
+                    item.classList.add("list-group-item");
+                    item.textContent = `ID: ${data.row.id}, Name: ${data.row.name}, Date: ${data.row.date}`;
+                    list.prepend(item);
+                });
+
+            
     </script>
 </body>
 </html>
