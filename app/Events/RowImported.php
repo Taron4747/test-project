@@ -4,8 +4,6 @@ namespace App\Events;
 
 use Illuminate\Broadcasting\Channel;
 use Illuminate\Broadcasting\InteractsWithSockets;
-use Illuminate\Broadcasting\PresenceChannel;
-use Illuminate\Broadcasting\PrivateChannel;
 use Illuminate\Contracts\Broadcasting\ShouldBroadcast;
 use Illuminate\Foundation\Events\Dispatchable;
 use Illuminate\Queue\SerializesModels;
@@ -23,11 +21,18 @@ class RowImported implements ShouldBroadcast
 
     public function broadcastOn()
     {
-        return new Channel('import-channel');
+        return new Channel('import-channel'); // Канал, на который подписывается фронтенд
     }
 
     public function broadcastAs()
     {
-        return 'row.imported';
+        return 'row.imported'; // Имя события
+    }
+
+    public function broadcastWith()
+    {
+        return [
+            'row' => $this->row
+        ];
     }
 }

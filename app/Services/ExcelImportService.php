@@ -35,31 +35,23 @@ class ExcelImportService
         foreach ($errors as $error) {
             $content .= $error . "\n";
         }
+        $directoryPath = base_path('error-files');
+
+        if (!\File::exists($directoryPath)) {
+            \File::makeDirectory($directoryPath, 0755, true);
+        }
+
+        $filePath = $directoryPath . '/result'.$importId.'.txt';
+
+        \File::put($filePath, $content);
 
 
 
+            // Git commit
+            $this->commitErrorReport();
+        }
 
-    // Define directory path using base_path()
-    $directoryPath = base_path('error-files');
-
-    // Ensure the 'error-files' directory exists
-    if (!\File::exists($directoryPath)) {
-        \File::makeDirectory($directoryPath, 0755, true);
-    }
-
-    // Define full file path
-    $filePath = $directoryPath . '/result'.$importId.'.txt';
-
-    // Create and write content to file
-    \File::put($filePath, $content);
-
-
-
-        // Git commit
-        $this->commitErrorReport($filePath);
-    }
-
-    protected function commitErrorReport( $filePath)
+    protected function commitErrorReport( )
     {
         
 
@@ -74,9 +66,6 @@ class ExcelImportService
         ]);
         
         exec($commands . ' 2>&1', $output, $returnVar);
-        
-        // Log the full output
-        \Log::info("Running combined command", ['output' => implode("\n", $output)]);
         
         if ($returnVar !== 0) {
             \Log::error("Git command failed", ['output' => implode("\n", $output)]);
