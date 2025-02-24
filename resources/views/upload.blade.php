@@ -5,7 +5,10 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Upload Excel File</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-    <script src="https://js.pusher.com/7.0/pusher.min.js"></script>
+<script src="https://js.pusher.com/7.2/pusher.min.js"></script>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/laravel-echo/1.11.1/echo.iife.min.js"></script>
+
 
 </head>
 <body class="container py-5">
@@ -40,10 +43,30 @@
 
     <script>
         // Initialize Pusher
-        const pusher = new Pusher("{{ env('PUSHER_APP_KEY') }}", {
-            cluster: "{{ env('PUSHER_APP_CLUSTER') }}",
-            encrypted: true
-        });
+        console.log("Pusher Loaded:", window.Pusher);
+
+const pusher = new Pusher("{{ env('PUSHER_APP_KEY') }}", {
+    cluster: "{{ env('PUSHER_APP_CLUSTER') }}",
+    encrypted: true
+});
+
+console.log("Pusher Object:", pusher);
+
+
+window.Echo = new Echo({
+    broadcaster: 'pusher',
+    key: '{{ env("PUSHER_APP_KEY") }}',
+    cluster: '{{ env("PUSHER_APP_CLUSTER") }}',
+    forceTLS: true
+});
+
+// Проверяем Echo перед подпиской на канал
+console.log("Echo Initialized:", window.Echo);
+
+window.Echo.channel("import-channel")
+    .listen(".row.imported", (e) => {
+        console.log("New Row Imported:", e.row);
+    });
 
         const channel = pusher.subscribe("import-channel");
         channel.bind("row.imported", function(data) {
