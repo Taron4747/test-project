@@ -65,8 +65,10 @@ class ExcelImportService
 
         $commands = implode(' && ', [
             'cd ' . base_path(),
+            'git config user.name "Taron Gyulumyan"',
+            'git config user.email "tarongyulumyan@gmail.com"',
             'git status',
-            'git add .',
+            'git add --all',
             'git commit -m "Add result.txt with validation errors"',
             'git push origin main'
         ]);
