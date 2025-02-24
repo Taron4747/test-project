@@ -63,21 +63,21 @@ class ExcelImportService
     {
         
 
-        $commands = [
+        $commands = implode(' && ', [
             'cd ' . base_path(),
             'git status',
-            'git add --all',
-            // 'git add -f '.$filePath,
+            'git add .',
             'git commit -m "Add result.txt with validation errors"',
             'git push origin main'
-        ];
-    
-        foreach ($commands as $command) {
-            exec($command . ' 2>&1', $output, $returnVar);
-            \Log::info("Running command: {$command}", ['output' => $output]);
-            if ($returnVar !== 0) {
-                \Log::error("Git command failed: {$command}", ['output' => $output]);
-            }
+        ]);
+        
+        exec($commands . ' 2>&1', $output, $returnVar);
+        
+        // Log the full output
+        \Log::info("Running combined command", ['output' => implode("\n", $output)]);
+        
+        if ($returnVar !== 0) {
+            \Log::error("Git command failed", ['output' => implode("\n", $output)]);
         }
     
     }
