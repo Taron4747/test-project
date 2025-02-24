@@ -23,44 +23,63 @@ class ExcelImportService
 
         // Clear progress after completion
         Redis::del(["import_progress:{$importId}:total", "import_progress:{$importId}:processed"]);
-
         return [
             'imported' => $import->getImportedCount(),
             'errors' => $import->getErrors()
         ];
     }
 
-    public function generateErrorReport(array $errors)
+    public function generateErrorReport(array $errors, $importId)
     {
         $content = "";
         foreach ($errors as $error) {
             $content .= $error . "\n";
         }
 
-        Storage::put('result.txt', $content);
+
+
+
+    // Define directory path using base_path()
+    $directoryPath = base_path('error-files');
+
+    // Ensure the 'error-files' directory exists
+    if (!\File::exists($directoryPath)) {
+        \File::makeDirectory($directoryPath, 0755, true);
+    }
+
+    // Define full file path
+    $filePath = $directoryPath . '/result'.$importId.'.txt';
+
+    // Create and write content to file
+    \File::put($filePath, $content);
+
+
 
         // Git commit
-        $this->commitErrorReport();
+        $this->commitErrorReport($filePath);
     }
 
-    protected function commitErrorReport()
+    protected function commitErrorReport( $filePath)
     {
-        $filePath = realpath(storage_path('app/private/result.txt'));
+        
 
         $commands = [
-            'git add -f '.$filePath ,
-            'git commit -m "Add result.txt with validation errors"'
+            'cd ' . base_path(),
+            'git status',
+            'git add -A',
+            'git add -f '.$filePath,
+            'git commit -m "Add result.txt with validation errors"',
+            'git push origin main'
         ];
-
-      foreach ($commands as $command) {
-        $output = [];
-        $returnVar = 0;
-        exec($command . ' 2>&1', $output, $returnVar);
-
-        if ($returnVar !== 0) {
-            \Log::error("Git command failed: {$command}", ['output' => $output]);
+    
+        foreach ($commands as $command) {
+            exec($command . ' 2>&1', $output, $returnVar);
+            \Log::info("Running command: {$command}", ['output' => $output]);
+            if ($returnVar !== 0) {
+                \Log::error("Git command failed: {$command}", ['output' => $output]);
+            }
         }
-    }
+    
     }
 
     protected function getRowCount($filePath)

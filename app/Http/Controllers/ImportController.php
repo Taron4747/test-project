@@ -34,7 +34,7 @@ $start = \Carbon\Carbon::now()->format('d:m:y h:i');
 
         $result = $this->importService->import(storage_path("app/private/{$path}"), $importId);
 
-        $this->importService->generateErrorReport($result['errors']);
+        $this->importService->generateErrorReport($result['errors'], $importId);
         $end = \Carbon\Carbon::now()->format('d:m:y h:i');
 
         return response()->json([
